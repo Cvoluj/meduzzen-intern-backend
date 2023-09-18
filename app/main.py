@@ -1,18 +1,18 @@
 from fastapi import FastAPI
 import uvicorn
 from routers import health
-from dotenv import load_dotenv
-import os
-
-
-load_dotenv()
-HOST = os.getenv('HOST')
-PORT = int(os.getenv('PORT'))
-
+from core.config import ServerSettings
 
 app = FastAPI()
+config = ServerSettings().model_dump()
+
+
+
 app.include_router(health.router)
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host=HOST, port=PORT, log_level="info", reload=os.getenv('DEBUG', False))
+    host = config['HOST']
+    port = config['PORT']
+    reload = config['RELOAD']
+    uvicorn.run("main:app", host=host, port=port, log_level="info", reload=reload)
