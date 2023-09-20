@@ -1,12 +1,14 @@
 # Instalation
 Clone project to your local machine using Git. You can use the following command to clone the repository:
 ```
-git clone --branch BE-1-init-application https://github.com/Cvoluj/meduzzen-intern-backend.git
+git clone --branch BE-2-init_application https://github.com/Cvoluj/meduzzen-intern-backend.git
 ```
-Install requirements.txt
+Create your image
 ```
-pip install requirements.txt
+docker build . -t <container_name>:latest
 ```
-Create or edit **.env** according to **.env.sample**
-
-Run **app/main.py**
+Run container
+```
+docker run -p 8000:8000 <image_name>
+```
+Use localhost:8000 to visit site
