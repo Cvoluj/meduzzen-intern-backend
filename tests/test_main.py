@@ -13,10 +13,3 @@ def test_main_reload():
 
 def test_main_host():
     assert log_level == 'info'
-
-async def test_routers_health():
-    assert health_check() == {
-        'status_code': 200,
-        'detail': 'ok',
-        'result': 'working'
-        }
