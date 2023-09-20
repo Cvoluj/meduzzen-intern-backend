@@ -1,7 +1,6 @@
 from fastapi import FastAPI
-import uvicorn
-from routers import health
-from core.config import ServerSettings
+from app.routers import health
+from app.core.config import ServerSettings
 
 app = FastAPI()
 config = ServerSettings()
