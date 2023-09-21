@@ -1,14 +1,7 @@
-import sys
-import os
-
-current_dir = os.path.dirname(os.path.realpath(__file__))
-project_dir = os.path.abspath(os.path.join(current_dir, '..'))
-sys.path.append(project_dir)
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import health
-from app.core.config import ServerSettings
+from app.config.app_config import ServerSettings
 
 
 app = FastAPI()

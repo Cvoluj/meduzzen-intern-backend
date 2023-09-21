@@ -1,15 +1,15 @@
-from app.main import host, port, reload, log_level
+from app.main import app
 from app.routers.health import health_check
+from fastapi.testclient import TestClient
 
 
-def test_main_host():
-    assert host == '127.0.0.1'
+client =  TestClient(app)
 
-def test_main_port():
-    assert port == 8000
-    
-def test_main_reload():
-    assert reload == True
-
-def test_main_host():
-    assert log_level == 'info'
+def test_health_check():
+    response = client.get('/')
+    assert response.status_code == 200
+    assert response.json() == {
+        'status_code': 200,
+        'detail': 'ok',
+        'result': 'working'
+    }
