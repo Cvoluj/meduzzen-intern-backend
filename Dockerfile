@@ -15,6 +15,6 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-WORKDIR fastapi_app
+WORKDIR /fastapi_app
 
 CMD ["uvicorn", "app.main:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "8000"]
