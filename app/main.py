@@ -9,13 +9,8 @@ config = ServerSettings()
 app.include_router(health.router)
 
 
-host = config.HOST
-port = config.PORT
-reload = config.RELOAD
-log_level = config.LOG_LEVEL
-
 origins = [
-    f'http://localhost:{port}'
+    f'http://localhost:{config.PORT}'
 ]
 
 app.add_middleware(
