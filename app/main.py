@@ -6,7 +6,8 @@ from fastapi_cache.decorator import cache
 from app.routers import health
 from app.config.app_config import server_setting
 from redis import asyncio as aioredis
-from app.db.database import AsyncSession, get_db
+from app.db.database import async_session
+from sqlalchemy import text
 
 
 app = FastAPI()
@@ -27,10 +28,22 @@ app.add_middleware(
 
 @app.on_event('startup')
 async def startup_event():
-    redis = aioredis.from_url(f'redis://{server_setting.REDIS_HOST}', encoding='utf8', decode_responses=True)
+    global redis 
+    redis = aioredis.from_url(f'redis://redis', encoding='utf8', decode_responses=True)
     FastAPICache.init(RedisBackend(redis), prefix='fastapi-cache')
 
-@app.get("/get_db")
-async def some_endpoint(db: AsyncSession = Depends(get_db)):
-    
-    return {"message": "Data retrieved from the database"}
+
+@app.get("/check_db")
+async def check_db_connection():    
+    try:
+        async with async_session() as session:
+            result = await session.execute(text('SELECT 1'))
+            return "Database connection is successful"
+    except Exception as e:
+        return f"Database connection error: {str(e)}"
+
+@app.get('/check_redis')
+async def check_redis_connection():
+    result = await redis.ping()
+    return result
+
