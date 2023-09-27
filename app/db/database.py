@@ -1,7 +1,6 @@
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
-from sqlalchemy import URL, text
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from app.config.app_config import server_setting
-import asyncio
+from redis import asyncio as aioredis
 
 
 engine = create_async_engine(
@@ -9,5 +8,14 @@ engine = create_async_engine(
     echo=True
 )
 
-async_session = async_sessionmaker(bind=engine, expire_on_commit=False, class_=AsyncSession)
+async def get_db():
+    async with AsyncSession(engine) as db:
+        yield db
 
+redis_pool= None 
+async def get_redis():
+    global redis_pool
+    if not redis_pool:
+        redis_pool = await aioredis.from_url(f'redis://redis', encoding='utf8', decode_responses=True)
+
+    return redis_pool
