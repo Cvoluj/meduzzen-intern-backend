@@ -1,0 +1,39 @@
+version: '3.7'
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    ports:
+      - '5432:5432'
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/app/db/data
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - '6379:6379'
+    volumes:
+        - redis_data:/app/db/redis_data
+    
+  
+  app: 
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    env_file:
+      - .env
+    ports:
+      - 8000:8000
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - .:/app  
+
+volumes:
+  postgres_data:
+  redis_data:

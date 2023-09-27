@@ -8,7 +8,7 @@ __pycache__/
 .vscode/
 # C extensions
 *.so
-
+test_redis.py
 # Distribution / packaging
 .Python
 build/

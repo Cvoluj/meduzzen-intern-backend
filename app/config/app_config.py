@@ -2,17 +2,19 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class ServerSettings(BaseSettings):
-    HOST: str
     PORT: int
-    RELOAD: bool
-    LOG_LEVEL: str
-    
+    DB_HOST: str
+    DB_PORT: int
+    POSTGRES_DB: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    REDIS_HOST: str
+
+    @property
+    def DB_URL(self):
+        return f'postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@postgres:{self.DB_PORT}/{self.POSTGRES_DB}'        
+
     model_config = SettingsConfigDict(env_file='.env')
 
 
-if __name__ == '__main__': # code snippet 
-    server_setting = ServerSettings()
-    print(server_setting.HOST)
-    print(server_setting.PORT)
-    print(server_setting.RELOAD)
-    print(server_setting.LOG_LEVEL)
+server_setting = ServerSettings()
