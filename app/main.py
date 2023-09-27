@@ -29,7 +29,3 @@ async def startup_event():
     global redis 
     redis = aioredis.from_url(f'redis://redis', encoding='utf8', decode_responses=True)
     FastAPICache.init(RedisBackend(redis), prefix='fastapi-cache')
-
-@app.get('/check_redis')
-async def check_redis_connection():
-  return await redis.ping()
