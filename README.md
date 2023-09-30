@@ -21,3 +21,9 @@ Run container
 ```
 docker run --rm fastapi_app_test
 ```
+## Migrations
+When container is running use:
+```
+docker-compose exec app alembic upgrade head
+```
+it will use last migration that have all required columns

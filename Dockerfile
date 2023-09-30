@@ -14,6 +14,7 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 COPY . .
+COPY ./migrations /fastapi_app/migrations
 
 WORKDIR /fastapi_app
 
