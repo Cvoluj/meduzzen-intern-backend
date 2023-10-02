@@ -1,29 +1,28 @@
-from sqlalchemy import MetaData, Integer, String, TIMESTAMP, ForeignKey, Table, Column, Boolean, Text, Enum, CheckConstraint
+from sqlalchemy import Integer, String, TIMESTAMP, ForeignKey, Table, Column, Boolean, Text, Enum, CheckConstraint
 from datetime import datetime
-
-
-metadata = MetaData()
+from sqlalchemy.orm import DeclarativeBase
 
 user_statuses = ('active', 'inactive')
 
-user = Table(
-    'user',
-    metadata,
-    Column('user_id', Integer, primary_key=True),
-    Column('user_email', String, nullable=False),
-    Column('user_firstname', String, nullable=False),
-    Column('user_lastname', String, nullable=True),
-    Column('user_status', String, CheckConstraint(f"user_status IN {user_statuses}", name='user_status'),
-            default='inactive'),
-    Column('user_city', String, nullable=True),
-    Column('user_phone', String(15), nullable=True),
-    Column('user_links', Text, nullable=True),
-    Column('user_avatar', String, nullable=True),
-    Column('hashed_password',  String, nullable=False),
-    Column('is_superuser', Boolean, default=False),
-    Column('created_at', TIMESTAMP, default=datetime.utcnow),
-    Column('updated_at', TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow),
+class Base(DeclarativeBase):
+    pass
 
+class UserModel(Base):
+    __tablename__ = 'user'
 
-)
+    user_id = Column(Integer, primary_key=True)
+    user_email = Column(String, nullable=False)
+    user_firstname = Column(String, nullable=False)
+    user_lastname = Column(String, nullable=True)
+    user_status = Column(String, CheckConstraint(f"user_status IN {user_statuses}", name='user_status'),
+            default='inactive')
+    user_city = Column(String, nullable=True)
+    user_phone = Column(String(15), nullable=True)
+    user_links = Column(Text, nullable=True)
+    user_avatar = Column(String, nullable=True)
+    hashed_password = Column(String, nullable=False)
+    is_superuser = Column(Boolean, default=False)
+    created_at = Column(TIMESTAMP, default=datetime.utcnow)
+    updated_at = Column(TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
+
 

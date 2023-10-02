@@ -22,8 +22,21 @@ Run container
 docker run --rm fastapi_app_test
 ```
 ## Migrations
+
 When container is running use:
+```
+docker-compose exec app alembic revision --autogenerate -m <name_of_migration>
+```
+Next
 ```
 docker-compose exec app alembic upgrade head
 ```
 it will use last migration that have all required columns
+If you want to check it:
+```
+docker exec -it postgres psql postgres postgres
+```
+```
+postgres=# /d user
+```
+it should return table with all columns from UserBase model
