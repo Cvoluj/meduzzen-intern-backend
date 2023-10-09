@@ -1,18 +1,18 @@
-from sqlalchemy import Integer, String, TIMESTAMP, ForeignKey, Table, Column, Boolean, Text, Enum, CheckConstraint
+from sqlalchemy import Integer, String, TIMESTAMP, Column, Boolean, Text, Enum, CheckConstraint
 from datetime import datetime
-from sqlalchemy.orm import DeclarativeBase
+from app.models.base_class import Base
+
+
 
 user_statuses = ('active', 'inactive')
 
-class Base(DeclarativeBase):
-    pass
 
 class UserModel(Base):
     __tablename__ = 'user'
 
-    user_id = Column(Integer, primary_key=True)
-    user_email = Column(String, nullable=False)
-    user_firstname = Column(String, nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_email = Column(String, nullable=False, unique=True)
+    user_firstname = Column(String, nullable=False, unique=True)
     user_lastname = Column(String, nullable=True)
     user_status = Column(String, CheckConstraint(f"user_status IN {user_statuses}", name='user_status'),
             default='inactive')
@@ -25,4 +25,5 @@ class UserModel(Base):
     created_at = Column(TIMESTAMP, default=datetime.utcnow)
     updated_at = Column(TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-
+    def __repr__(self) -> str:
+        return f'{self.user_firstname}'
