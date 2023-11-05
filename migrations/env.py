@@ -13,7 +13,7 @@ from alembic import context
 # access to the values within the .ini file in use.
 config = context.config
 section = config.config_ini_section
-config.set_section_option(section, 'DB_HOST', 'postgres')
+config.set_section_option(section, 'DB_HOST', 'localhost')
 config.set_section_option(section, 'DB_PORT', str(server_setting.DB_PORT))
 config.set_section_option(section, 'POSTGRES_DB', server_setting.POSTGRES_DB)
 config.set_section_option(section, 'POSTGRES_PASSWORD', server_setting.POSTGRES_PASSWORD)

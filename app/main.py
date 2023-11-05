@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-from app.routers import health, user_routers
+from app.routers import health, user_routers, login
 from app.config.app_config import server_setting
 from redis import asyncio as aioredis
 
@@ -11,6 +11,7 @@ from redis import asyncio as aioredis
 app = FastAPI()
 app.include_router(health.router)
 app.include_router(user_routers.user_endpoints)
+app.include_router(login.router)
 
 origins = [
     f'http://localhost:{server_setting.PORT}'

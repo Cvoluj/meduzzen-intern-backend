@@ -1,14 +1,16 @@
 import logging
+import jwt
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import update
-from typing import List
+from typing import List, Optional
 
 from app.models.models import UserModel
 from app.schemas.user_schemas import UserSignIn, UserStatusEnum
 from app.services.hashing import PasswordContext
 from app.services.crud_base import CRUDBaseGet
+from app.utils.auth0 import VerifyToken
 
 
 logging.basicConfig(
@@ -24,10 +26,17 @@ class UserCRUD(CRUDBaseGet):
             logger.error("User not found")
             raise HTTPException(status_code=404, detail="User not found")
         return user
+    
+    async def get_by_email(self, db: AsyncSession, *, email: str) -> Optional[UserModel]:
+        return await db.execute(select(self.model).where(self.model.user_email == email))
 
     async def get_multi(self, db: AsyncSession, *, skip: int = 0, limit: int = 10) -> List[UserModel]:
         return await db.execute(select(self.model).where(self.model.user_status == UserStatusEnum.active).offset(skip).limit(limit).order_by(self.model.id))
     
+    # async def get_user_by_token(self, db: AsyncSession, token: str):
+        
+
+
     async def create(self, db: AsyncSession, user_data):
         hashed_password = PasswordContext.get_password_hash(user_data.hashed_password)
         user = UserModel(
@@ -50,6 +59,16 @@ class UserCRUD(CRUDBaseGet):
         await db.commit()
         logger.info(f"User {id} updated successfully")
         return await db.get(UserModel, id)
+    
+    async def authenticate(self, db: AsyncSession, *, email: str, password: str) -> Optional[UserModel]:
+        user = await self.get_by_email(db=db, email=email)
+        user = user.scalar()
+        print(user)
+        self.check_user(user)
+        if not PasswordContext.verify_password(password, user.hashed_password):
+            raise HTTPException(status_code=404, detail="Password didn`t match")
+        logger.info(f"User {user.user_firstname} authenticated successfully")
+        return user
 
     async def delete(self, db: AsyncSession, id):
         user = await db.get(UserModel, id)
